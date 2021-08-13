@@ -14,6 +14,21 @@ from detectron2.engine.defaults import DefaultPredictor
 from detectron2.utils.visualizer import ColorMode, Visualizer
 
 
+
+def bezier_to_poly(bezier):
+        # bezier to polygon
+        u = np.linspace(0, 1, 20)
+        bezier = bezier.reshape(2, 4, 2).transpose(0, 2, 1).reshape(4, 4)
+        points = (
+            np.outer((1 - u) ** 3, bezier[:, 0])
+            + np.outer(3 * u * ((1 - u) ** 2), bezier[:, 1])
+            + np.outer(3 * (u ** 2) * (1 - u), bezier[:, 2])
+            + np.outer(u ** 3, bezier[:, 3])
+        )
+        points = np.concatenate((points[:, :2], points[:, 2:]), axis=0)
+
+        return points
+
 class VisualizationDemo(object):
     def __init__(self, cfg, instance_mode=ColorMode.IMAGE, parallel=False):
         """
@@ -50,14 +65,11 @@ class VisualizationDemo(object):
 
         image = image[:, :, ::-1]
 
-        visualizer = TextVisualizer(image, self.metadata, instance_mode=self.instance_mode)
   
         points = []
         for bezier in predictions['instances'].beziers.to('cpu') :
-          point = visualizer._bezier_to_poly(bezier.numpy())
+          point = bezier_to_poly(bezier.numpy())
           points.append(point)
-  
-
         return predictions, points
 
     def _frame_from_video(self, video):
