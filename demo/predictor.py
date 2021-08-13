@@ -45,7 +45,6 @@ class VisualizationDemo(object):
             predictions (dict): the output of the model.
             vis_output (VisImage): the visualized image output.
         """
-        vis_output = None
         predictions = self.predictor(image)
         # Convert image from OpenCV BGR format to Matplotlib RGB format.
         img = np.array(image)
@@ -56,33 +55,15 @@ class VisualizationDemo(object):
         else:
             visualizer = Visualizer(image, self.metadata, instance_mode=self.instance_mode)
 
-        if "bases" in predictions:
-            self.vis_bases(predictions["bases"])
-        if "panoptic_seg" in predictions:
-            panoptic_seg, segments_info = predictions["panoptic_seg"]
-            vis_output = visualizer.draw_panoptic_seg_predictions(panoptic_seg.to(self.cpu_device), segments_info)
-        else:
-            if "sem_seg" in predictions:
-                vis_output = visualizer.draw_sem_seg(predictions["sem_seg"].argmax(dim=0).to(self.cpu_device))
-            if "instances" in predictions:
-                instances = predictions["instances"].to(self.cpu_device)
-                vis_output = visualizer.draw_instance_predictions(predictions=instances)
         isClosed = True
   
-        # Blue color in BGR
-        color = (255, 0, 0)
-          
-        # Line thickness of 2 px
-        thickness = 2
         points = []
         for bezier in predictions['instances'].beziers.to('cpu') :
           point = visualizer._bezier_to_poly(bezier.numpy())
-          # img = cv2.polylines(img, np.int32([point]), 
-          #             isClosed, color, thickness)
           points.append(point)
   
 
-        return predictions, vis_output, points
+        return predictions, points
 
     def _frame_from_video(self, video):
         while video.isOpened():
