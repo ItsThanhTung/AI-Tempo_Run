@@ -17,7 +17,7 @@ import numpy as np
 WINDOW_NAME = "COCO detections"
 
 def Get1LineResult(image_name, point):
-  return str(image_name) + "," + str(point[0][0]) + ","  + str(point[0][1])  + "," + str(point[1][0]) + ","  + str(point[1][1])  + "," + str(point[2][0]) + ","  + str(point[2][1])  + "," + str(point[3][0]) + ","  + str(point[3][1])   
+  return str(image_name) + "," + str(point[0][0]) + ","  + str(point[0][1])  + "," + str(point[1][0]) + ","  + str(point[1][1])  + "," + str(point[2][0]) + ","  + str(point[2][1])  + "," + str(point[3][0]) + ","  + str(point[3][1]) + "\n"  
 
 def order_points(pts):
 	# initialzie a list of coordinates that will be ordered
@@ -45,11 +45,8 @@ def order_points(pts):
 def Submit(path, points, out_file):
   image_name = path.split("/")[-1]
   for point in points: 
-    file = [image_name]
     rect = order_points(point)
-    result = Get1LineResult(image_name, rect)
-    out_file.write(result)
-    out_file.write("\n")
+    out_file.write(Get1LineResult(image_name, rect))
 
 
 

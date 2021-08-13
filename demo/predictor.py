@@ -46,16 +46,11 @@ class VisualizationDemo(object):
             vis_output (VisImage): the visualized image output.
         """
         predictions = self.predictor(image)
-        # Convert image from OpenCV BGR format to Matplotlib RGB format.
-        img = np.array(image)
+
 
         image = image[:, :, ::-1]
-        if self.vis_text:
-            visualizer = TextVisualizer(image, self.metadata, instance_mode=self.instance_mode)
-        else:
-            visualizer = Visualizer(image, self.metadata, instance_mode=self.instance_mode)
 
-        isClosed = True
+        visualizer = TextVisualizer(image, self.metadata, instance_mode=self.instance_mode)
   
         points = []
         for bezier in predictions['instances'].beziers.to('cpu') :
