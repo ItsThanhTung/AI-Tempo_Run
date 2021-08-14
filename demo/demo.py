@@ -119,8 +119,8 @@ if __name__ == "__main__":
               predictions, points = demo.run_on_image(img)
               if len(predictions["instances"]) > 0:
                 Submit(path, points, file_result)
-              logger.info(
-                  "{}: detected {} instances".format(
-                      path, len(predictions["instances"]))
-              )
+            #   logger.info(
+            #       "{}: detected {} instances".format(
+            #           path, len(predictions["instances"]))
+            #   )
     file_result.close()
